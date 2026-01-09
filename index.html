@@ -4,11 +4,10 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Superwoman — 30-Day Trading Challenge</title>
+
   <style>
     :root{
       --bg:#070A12;
-      --panel:#0E1322;
-      --panel2:#0B1020;
       --border:rgba(255,255,255,.10);
       --muted:rgba(255,255,255,.68);
       --text:rgba(255,255,255,.92);
@@ -178,20 +177,72 @@
       font-size:12px;
       color: rgba(255,255,255,.85);
       user-select:none;
-      position:relative;
     }
     .day.good{ background: rgba(46,160,67,.22); border-color: rgba(46,160,67,.45); }
     .day.bad{ background: rgba(248,81,73,.18); border-color: rgba(248,81,73,.35); }
     .day.selected{ outline:2px solid rgba(31,111,235,.70); outline-offset:2px; }
 
     .hint{ margin-top:10px; font-size:12px; color:var(--muted); line-height:1.4; }
-
     hr{ border:0; border-top:1px solid var(--border); margin:14px 0; }
 
-    .file{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+    /* --- WELCOME POPUP (shows once) --- */
+    .modal-backdrop{
+      position:fixed; inset:0;
+      display:none;
+      align-items:center; justify-content:center;
+      padding:18px;
+      background: rgba(0,0,0,.55);
+      z-index: 9999;
+    }
+    .modal{
+      width:min(560px, 100%);
+      border-radius: 22px;
+      overflow:hidden;
+      border:1px solid var(--border);
+      background: linear-gradient(180deg, rgba(255,255,255,.07) 0%, rgba(255,255,255,.03) 100%);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
+    }
+    .modal-img{
+      width:100%;
+      height: 240px;
+      object-fit: cover;
+      display:block;
+    }
+    .modal-body{ padding:14px; }
+    .modal-title{ font-size:18px; font-weight:850; letter-spacing:.2px; }
+    .modal-sub{ margin-top:6px; color:var(--muted); font-size:13px; line-height:1.35; }
+    .modal-actions{ display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end; margin-top:12px; }
+    .modal-note{ margin-top:10px; }
   </style>
 </head>
+
 <body>
+
+  <!-- POPUP -->
+  <div class="modal-backdrop" id="welcomeBackdrop" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="welcomeTitle">
+      <!-- Uses welcome.jpg if you upload it, otherwise falls back to cover.jpg -->
+      <img class="modal-img" src="./welcome.jpg"
+           onerror="this.onerror=null;this.src='./cover.jpg';"
+           alt="Welcome image" />
+      <div class="modal-body">
+        <div class="modal-title" id="welcomeTitle">Welcome, Noa 👑</div>
+        <div class="modal-sub">Your plan to be a <b>Superwoman</b> starts now. One day at a time. 🔥</div>
+        <div class="modal-sub">Today’s mission: click <b>“I traded today ✅”</b> or <b>“No trading ❌”</b>.</div>
+
+        <div class="modal-actions">
+          <button id="welcomeStartBtn">Let’s go 🚀</button>
+          <button class="secondary" id="welcomeCloseBtn">Close</button>
+        </div>
+
+        <div class="tiny modal-note">
+          Tip: Your progress stays on this device. Use “Download backup” only if you switch phones/computers.
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="wrap">
     <div class="hero">
       <div>
@@ -301,17 +352,19 @@
         <hr>
 
         <div style="font-weight:800; font-size:14px;">Backup</div>
-        <div class="row space" style="margin-top:10px;">
-          <button class="secondary" id="exportBtn">Export JSON</button>
-          <div class="file">
-            <input type="file" id="importFile" accept="application/json" />
-            <button class="secondary" id="importBtn">Import</button>
+        <div class="row" style="margin-top:10px; justify-content:space-between; align-items:center;">
+          <button class="secondary" id="exportBtn">Download backup</button>
+
+          <div class="row" style="justify-content:flex-end;">
+            <input type="file" id="importFile" accept="application/json" hidden />
+            <button class="secondary" id="chooseFileBtn">Choose backup file</button>
+            <span class="tiny" id="fileName">No file chosen</span>
+            <button class="secondary" id="importBtn">Restore</button>
           </div>
         </div>
 
         <div class="hint">
-          Everything is stored locally in your browser (no accounts, no server).
-          Export if you switch devices.
+          Backup is only needed if you switch devices. Otherwise, just use it normally.
         </div>
       </div>
     </div>
@@ -319,8 +372,8 @@
 
 <script>
 (() => {
-  // Keep the same key so you don't lose your existing progress
   const LS_KEY = "superwoman_trading_tracker_v1";
+  const WELCOME_KEY = "superwoman_welcome_seen_v1";
 
   const cfg = { startAmount: 30, rate: 0.28, totalDays: 30 };
   const eur = (n) => new Intl.NumberFormat("en-GB", { style:"currency", currency:"EUR", maximumFractionDigits:2 }).format(n);
@@ -330,11 +383,11 @@
   const daysBetween = (a, b) => Math.round((midnight(b) - midnight(a)) / (24*60*60*1000));
 
   const defaultState = () => ({
-    startDate: null, // ISO yyyy-mm-dd
-    selectedDay: 1,  // 1..30
+    startDate: null,
+    selectedDay: 1,
     entries: Array.from({length: cfg.totalDays}, () => ({
-      trade: null,    // true/false/null
-      balance: null,  // number|null
+      trade: null,
+      balance: null,
       note: "",
       updatedAt: null
     }))
@@ -369,17 +422,59 @@
   const saveBtn = document.getElementById("saveBtn");
   const saveMsg = document.getElementById("saveMsg");
 
+  // Backup buttons
   const exportBtn = document.getElementById("exportBtn");
   const importBtn = document.getElementById("importBtn");
   const importFile = document.getElementById("importFile");
+  const chooseFileBtn = document.getElementById("chooseFileBtn");
+  const fileName = document.getElementById("fileName");
 
-  // Init
+  // Welcome modal
+  const welcomeBackdrop = document.getElementById("welcomeBackdrop");
+  const welcomeCloseBtn = document.getElementById("welcomeCloseBtn");
+  const welcomeStartBtn = document.getElementById("welcomeStartBtn");
+
   goalInput.value = eur(cfg.startAmount * Math.pow(1 + cfg.rate, cfg.totalDays));
   startDateInput.value = state.startDate || "";
 
   renderCalendar();
   renderAll();
   renderEditor();
+
+  // Show welcome only once
+  setTimeout(() => {
+    if(!localStorage.getItem(WELCOME_KEY)){
+      openWelcome();
+    }
+  }, 200);
+
+  function openWelcome(){
+    welcomeBackdrop.style.display = "flex";
+    welcomeBackdrop.setAttribute("aria-hidden","false");
+  }
+  function closeWelcome(){
+    welcomeBackdrop.style.display = "none";
+    welcomeBackdrop.setAttribute("aria-hidden","true");
+    localStorage.setItem(WELCOME_KEY, "1");
+  }
+
+  welcomeCloseBtn.addEventListener("click", closeWelcome);
+  welcomeStartBtn.addEventListener("click", () => {
+    // If not started, start today
+    if(!state.startDate){
+      state.startDate = todayISO();
+      state.selectedDay = 1;
+      save();
+      renderAll();
+    }
+    closeWelcome();
+  });
+  welcomeBackdrop.addEventListener("click", (e) => {
+    if(e.target === welcomeBackdrop) closeWelcome();
+  });
+  document.addEventListener("keydown", (e) => {
+    if(e.key === "Escape" && welcomeBackdrop.style.display === "flex") closeWelcome();
+  });
 
   function load(){
     try{
@@ -411,7 +506,7 @@
     if(!state.startDate) return null;
     const start = new Date(state.startDate);
     const now = new Date();
-    const idx = daysBetween(start, now); // 0 for same day
+    const idx = daysBetween(start, now);
     return clamp(idx + 1, 1, cfg.totalDays);
   }
 
@@ -568,6 +663,7 @@
     const ok = confirm("Reset everything on this device?");
     if(!ok) return;
     state = defaultState();
+    localStorage.removeItem(WELCOME_KEY); // show welcome again after reset
     save();
     renderAll();
     flash("Reset done");
@@ -602,11 +698,18 @@
     renderAll();
   });
 
+  // Backup UI
+  chooseFileBtn.addEventListener("click", () => importFile.click());
+  importFile.addEventListener("change", () => {
+    const f = importFile.files && importFile.files[0];
+    fileName.textContent = f ? f.name : "No file chosen";
+  });
+
   exportBtn.addEventListener("click", () => {
     const blob = new Blob([JSON.stringify(state, null, 2)], {type:"application/json"});
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
-    a.download = "superwoman-trading-tracker-backup.json";
+    a.download = "superwoman-backup.json";
     document.body.appendChild(a);
     a.click();
     a.remove();
@@ -615,12 +718,12 @@
 
   importBtn.addEventListener("click", async () => {
     const file = importFile.files && importFile.files[0];
-    if(!file){ flash("Choose a JSON file"); return; }
+    if(!file){ flash("Choose a backup file first"); return; }
     try{
       const txt = await file.text();
       const parsed = JSON.parse(txt);
       if(!parsed.entries || !Array.isArray(parsed.entries) || parsed.entries.length !== cfg.totalDays){
-        flash("Invalid JSON");
+        flash("That backup file is not valid");
         return;
       }
       state = {
@@ -635,9 +738,9 @@
       };
       save();
       renderAll();
-      flash("Imported ✅");
+      flash("Restored ✅");
     } catch {
-      flash("Could not read that JSON");
+      flash("Could not read that file");
     }
   });
 
@@ -645,4 +748,5 @@
 </script>
 </body>
 </html>
+
 
