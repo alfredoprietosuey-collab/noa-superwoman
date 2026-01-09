@@ -1,229 +1,329 @@
 <!doctype html>
-<html lang="es">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>30 días to be a Super Woman</title>
+  <title>Superwoman — 30-Day Trading Challenge</title>
   <style>
     :root{
-      --bg:#0b0f19; --panel:#121a2a; --panel2:#0f1626;
-      --border:#25314a; --muted:#a8b0c2; --text:#e7eaf0;
-      --good:#2ea043; --bad:#f85149; --empty:#1b243a; --warn:#f0b429;
+      --bg:#070A12;
+      --panel:#0E1322;
+      --panel2:#0B1020;
+      --border:rgba(255,255,255,.10);
+      --muted:rgba(255,255,255,.68);
+      --text:rgba(255,255,255,.92);
+      --good:#2ea043;
+      --bad:#f85149;
+      --empty:rgba(255,255,255,.06);
       --blue:#1f6feb;
+      --shadow: 0 14px 40px rgba(0,0,0,.45);
+      --radius:18px;
     }
     *{ box-sizing:border-box; }
-    body{ margin:0; background:radial-gradient(1200px 700px at 20% 0%, #182241 0%, var(--bg) 55%);
-          color:var(--text); font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif; }
-    .wrap{ max-width:980px; margin:0 auto; padding:18px; }
-    .top{
-      display:flex; gap:12px; flex-wrap:wrap; align-items:flex-end; justify-content:space-between;
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(900px 600px at 15% 0%, rgba(31,111,235,.35), transparent 60%),
+        radial-gradient(900px 600px at 85% 10%, rgba(46,160,67,.22), transparent 55%),
+        radial-gradient(900px 600px at 50% 100%, rgba(248,81,73,.16), transparent 55%),
+        var(--bg);
+    }
+    .wrap{ max-width: 1020px; margin:0 auto; padding:18px; }
+
+    .hero{
+      display:flex; gap:14px; flex-wrap:wrap; align-items:flex-end; justify-content:space-between;
       margin-bottom:14px;
     }
-    h1{ margin:0; font-size:20px; }
-    .subtitle{ margin-top:6px; color:var(--muted); font-size:13px; }
-    .card{ background:linear-gradient(180deg, var(--panel) 0%, var(--panel2) 100%);
-           border:1px solid var(--border); border-radius:16px; padding:14px; }
-    .grid{ display:grid; gap:12px; grid-template-columns: 1.2fr 1fr; }
-    @media (max-width: 880px){ .grid{ grid-template-columns: 1fr; } }
-
-    .row{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+    .title{
+      margin:0;
+      font-size:22px;
+      letter-spacing:.2px;
+      line-height:1.15;
+    }
+    .gradient{
+      background: linear-gradient(90deg, rgba(255,255,255,.95), rgba(31,111,235,.95), rgba(46,160,67,.95));
+      -webkit-background-clip:text;
+      background-clip:text;
+      color:transparent;
+    }
+    .subtitle{
+      margin-top:7px;
+      font-size:13px;
+      color:var(--muted);
+      max-width: 760px;
+    }
+    .pills{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
     .pill{
-      border:1px solid var(--border); background:#0c1426; color:var(--muted);
-      padding:6px 10px; border-radius:999px; font-size:12px;
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.04);
+      backdrop-filter: blur(10px);
+      padding:7px 10px;
+      border-radius:999px;
+      font-size:12px;
+      color:var(--muted);
     }
+    .pill strong{ color:var(--text); font-weight:700; }
 
-    button, input, textarea{
-      font:inherit;
+    .grid{ display:grid; gap:12px; grid-template-columns: 1.25fr 1fr; }
+    @media (max-width: 920px){ .grid{ grid-template-columns: 1fr; } }
+
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,.06) 0%, rgba(255,255,255,.03) 100%);
+      border:1px solid var(--border);
+      border-radius: var(--radius);
+      padding:14px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(12px);
     }
+    .row{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+    .space{ justify-content:space-between; }
+
+    button, input { font: inherit; }
     button{
-      border:0; border-radius:12px; padding:10px 12px; cursor:pointer;
-      background:var(--blue); color:#fff;
+      border:0;
+      border-radius: 14px;
+      padding:10px 12px;
+      cursor:pointer;
+      color:#fff;
+      background: linear-gradient(180deg, rgba(31,111,235,1), rgba(22,88,200,1));
+      box-shadow: 0 10px 22px rgba(31,111,235,.18);
     }
-    button.secondary{ background:#23304a; border:1px solid #33415f; color:var(--text); }
-    button.danger{ background:#3b1b1b; border:1px solid #6a2a2a; }
-    button.good{ background:#17381f; border:1px solid #265a31; }
-    button.bad{ background:#3a1717; border:1px solid #6a2a2a; }
-    button:active{ transform:translateY(1px); }
-
-    label{ font-size:12px; color:var(--muted); display:block; margin-bottom:6px; }
-    input, textarea{
-      width:100%; padding:10px 10px; border-radius:12px;
-      border:1px solid var(--border); background:#0c1426; color:var(--text);
+    button.secondary{
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+      border:1px solid var(--border);
+      box-shadow: none;
     }
-    textarea{ min-height:90px; resize:vertical; }
+    button.good{
+      background: linear-gradient(180deg, rgba(46,160,67,1), rgba(30,130,52,1));
+      box-shadow: 0 10px 22px rgba(46,160,67,.18);
+    }
+    button.bad{
+      background: linear-gradient(180deg, rgba(248,81,73,1), rgba(197,52,46,1));
+      box-shadow: 0 10px 22px rgba(248,81,73,.16);
+    }
+    button.danger{
+      background: rgba(248,81,73,.12);
+      border:1px solid rgba(248,81,73,.35);
+      color: var(--text);
+      box-shadow:none;
+    }
+    button:active{ transform: translateY(1px); }
 
-    .stats{ display:grid; gap:10px; grid-template-columns: repeat(4, 1fr); }
+    label{ display:block; font-size:12px; color:var(--muted); margin-bottom:6px; }
+    input{
+      width:100%;
+      padding:10px 10px;
+      border-radius: 14px;
+      border:1px solid var(--border);
+      background: rgba(0,0,0,.18);
+      color: var(--text);
+      outline: none;
+    }
+    input:focus{ border-color: rgba(31,111,235,.6); box-shadow: 0 0 0 3px rgba(31,111,235,.15); }
+
+    .split{ display:grid; gap:10px; grid-template-columns:1fr 1fr; }
+    @media (max-width: 560px){ .split{ grid-template-columns:1fr; } }
+
+    .stats{ display:grid; gap:10px; grid-template-columns: repeat(4, 1fr); margin-top:12px; }
     @media (max-width: 880px){ .stats{ grid-template-columns: repeat(2, 1fr); } }
     .stat{
-      border:1px solid var(--border); border-radius:14px; padding:10px;
-      background:#0c1426;
+      border:1px solid var(--border);
+      border-radius: 16px;
+      padding:10px;
+      background: rgba(0,0,0,.14);
     }
-    .stat .k{ color:var(--muted); font-size:12px; }
-    .stat .v{ margin-top:4px; font-size:16px; font-weight:700; }
+    .k{ color:var(--muted); font-size:12px; }
+    .v{ margin-top:4px; font-size:16px; font-weight:750; letter-spacing:.2px; }
+
+    .progress-wrap{ margin-top:10px; }
+    .progress-top{ display:flex; justify-content:space-between; gap:12px; align-items:center; }
+    .tiny{ font-size:12px; color:var(--muted); }
+    .ok{ color: rgba(126,231,135,.95); }
+    .no{ color: rgba(255,180,180,.95); }
 
     .progress{
-      height:10px; border-radius:999px; background:#0c1426; border:1px solid var(--border);
+      height:11px;
+      border-radius:999px;
+      background: rgba(0,0,0,.18);
+      border:1px solid var(--border);
       overflow:hidden;
+      margin-top:8px;
     }
-    .progress > div{ height:100%; background:linear-gradient(90deg, #2ea043, #1f6feb); width:0%; }
+    .progress > div{
+      height:100%;
+      width:0%;
+      background: linear-gradient(90deg, rgba(46,160,67,1), rgba(31,111,235,1));
+    }
 
     .calendar{
-      display:grid; grid-template-columns: repeat(10, 1fr);
-      gap:6px; margin-top:10px;
+      display:grid;
+      grid-template-columns: repeat(10, 1fr);
+      gap:7px;
+      margin-top:12px;
     }
     @media (max-width: 560px){ .calendar{ grid-template-columns: repeat(6, 1fr); } }
+
     .day{
-      aspect-ratio:1/1; border-radius:10px; border:1px solid var(--border);
-      background:var(--empty); cursor:pointer;
-      display:flex; align-items:center; justify-content:center;
-      font-size:12px; color:rgba(231,234,240,.85);
+      aspect-ratio: 1 / 1;
+      border-radius: 14px;
+      border:1px solid var(--border);
+      background: var(--empty);
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:12px;
+      color: rgba(255,255,255,.85);
       user-select:none;
+      position:relative;
     }
-    .day.good{ background:rgba(46,160,67,.22); border-color:rgba(46,160,67,.45); }
-    .day.bad{ background:rgba(248,81,73,.18); border-color:rgba(248,81,73,.35); }
-    .day.empty{ background:var(--empty); }
-    .day.selected{ outline:2px solid rgba(31,111,235,.7); outline-offset:2px; }
+    .day.good{ background: rgba(46,160,67,.22); border-color: rgba(46,160,67,.45); }
+    .day.bad{ background: rgba(248,81,73,.18); border-color: rgba(248,81,73,.35); }
+    .day.selected{ outline:2px solid rgba(31,111,235,.70); outline-offset:2px; }
 
-    .hint{ color:var(--muted); font-size:12px; margin-top:8px; }
-    .tiny{ font-size:12px; color:var(--muted); }
-    .split{ display:grid; gap:10px; grid-template-columns: 1fr 1fr; }
-    @media (max-width: 560px){ .split{ grid-template-columns: 1fr; } }
+    .hint{ margin-top:10px; font-size:12px; color:var(--muted); line-height:1.4; }
 
-    .ok{ color:#7ee787; }
-    .no{ color:#ffb4b4; }
-    .warn{ color:#ffd27d; }
+    hr{ border:0; border-top:1px solid var(--border); margin:14px 0; }
 
-    .footer-actions{ display:flex; gap:10px; flex-wrap:wrap; justify-content:space-between; align-items:center; margin-top:10px; }
     .file{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
   </style>
 </head>
 <body>
   <div class="wrap">
-    <div class="top">
+    <div class="hero">
       <div>
-        <h1>30 días to be a Super Woman 💪✨</h1>
+        <h1 class="title"><span class="gradient">Superwoman</span> — 30-Day Trading Challenge 💪✨</h1>
         <div class="subtitle">
-          Reto: <b>30€ → 49.365,14€</b> (28% diario, reinvirtiendo) · Marca cada día si has hecho trading.
+          Start with <b>€30</b> and aim for <b>€49,365.14</b> in 30 days (28% daily, compounding).
+          Tick each day: traded ✅ or not ❌. Optionally log your actual end-of-day balance.
         </div>
       </div>
-      <div class="row">
-        <span class="pill" id="statusPill">Sin empezar</span>
-        <button class="secondary" id="jumpTodayBtn">Ir a hoy</button>
+
+      <div class="pills">
+        <span class="pill" id="statusPill"><strong>Status:</strong> Not started</span>
+        <button class="secondary" id="jumpTodayBtn">Go to today</button>
       </div>
     </div>
 
     <div class="grid">
+      <!-- LEFT: Overview -->
       <div class="card">
-        <div class="row" style="justify-content:space-between;">
+        <div class="row space">
           <div class="row">
-            <button id="startTodayBtn">Empezar reto hoy</button>
-            <button class="secondary" id="setStartBtn">Elegir fecha</button>
+            <button id="startTodayBtn">Start today</button>
+            <button class="secondary" id="setStartBtn">Set start date</button>
           </div>
-          <button class="danger" id="resetBtn" title="Borra todo el progreso (solo en este navegador)">Reset</button>
+          <button class="danger" id="resetBtn" title="This clears your progress on this device">Reset</button>
         </div>
 
-        <div class="split" style="margin-top:10px;">
+        <div class="split" style="margin-top:12px;">
           <div>
-            <label>Fecha de inicio</label>
+            <label>Start date</label>
             <input type="date" id="startDateInput" />
-            <div class="hint">Tip: si empiezas hoy, pulsa “Empezar reto hoy”.</div>
+            <div class="hint">Tip: click “Start today” to begin instantly.</div>
           </div>
           <div>
-            <label>Objetivo del reto</label>
+            <label>Challenge goal</label>
             <input type="text" id="goalInput" disabled />
-            <div class="hint">Se calcula como 30 × 1,28^30 ≈ 49.365,14€</div>
+            <div class="hint">Calculated as 30 × 1.28^30</div>
           </div>
         </div>
 
-        <div class="stats" style="margin-top:12px;">
+        <div class="stats">
           <div class="stat">
-            <div class="k">Día</div>
+            <div class="k">Selected day</div>
             <div class="v" id="dayStat">—</div>
           </div>
           <div class="stat">
-            <div class="k">Objetivo hoy</div>
+            <div class="k">Target for that day</div>
             <div class="v" id="targetStat">—</div>
           </div>
           <div class="stat">
-            <div class="k">Racha</div>
+            <div class="k">Streak (✅)</div>
             <div class="v" id="streakStat">—</div>
           </div>
           <div class="stat">
-            <div class="k">Completados</div>
+            <div class="k">Done</div>
             <div class="v" id="doneStat">—</div>
           </div>
         </div>
 
-        <div style="margin-top:10px;">
-          <div class="row" style="justify-content:space-between;">
+        <div class="progress-wrap">
+          <div class="progress-top">
             <div class="tiny" id="progressText">—</div>
             <div class="tiny" id="onTrackText">—</div>
           </div>
-          <div class="progress" aria-label="Progreso del reto">
+          <div class="progress" aria-label="Challenge progress">
             <div id="progressBar"></div>
           </div>
         </div>
 
-        <div class="calendar" id="calendar" aria-label="Calendario 30 días"></div>
-        <div class="hint">Pulsa un día para editarlo. Verde = trading ✅ · Rojo = no ❌ · Gris = sin marcar.</div>
+        <div class="calendar" id="calendar" aria-label="30-day calendar"></div>
+        <div class="hint">Click a day to edit. Green = traded ✅ · Red = no ❌ · Grey = not set.</div>
       </div>
 
+      <!-- RIGHT: Day editor + backup -->
       <div class="card">
-        <div class="row" style="justify-content:space-between; align-items:flex-start;">
+        <div class="row space" style="align-items:flex-start;">
           <div>
-            <div style="font-weight:700; font-size:14px;">Registro del día</div>
-            <div class="tiny" id="editTitle">Selecciona un día</div>
+            <div style="font-weight:800; font-size:14px;">Daily log</div>
+            <div class="tiny" id="editTitle">Select a day</div>
           </div>
-          <button class="secondary" id="clearDayBtn" title="Dejar el día sin marcar">Limpiar día</button>
+          <button class="secondary" id="clearDayBtn" title="Clear this day (unset)">Clear day</button>
         </div>
 
-        <div style="margin-top:10px;" class="row">
-          <button class="good" id="tradeYesBtn">Hoy he hecho trading ✅</button>
-          <button class="bad" id="tradeNoBtn">Hoy NO ❌</button>
+        <div class="row" style="margin-top:12px;">
+          <button class="good" id="tradeYesBtn">I traded today ✅</button>
+          <button class="bad" id="tradeNoBtn">No trading ❌</button>
         </div>
 
-        <div class="split" style="margin-top:10px;">
+        <div class="split" style="margin-top:12px;">
           <div>
-            <label>Saldo real al final del día (opcional)</label>
-            <input inputmode="decimal" placeholder="Ej: 42.50" id="balanceInput" />
-            <div class="hint">Si lo rellenas, te digo si vas por encima / por debajo del objetivo.</div>
+            <label>Actual end-of-day balance (optional)</label>
+            <input inputmode="decimal" placeholder="e.g. 42.50" id="balanceInput" />
+            <div class="hint">If filled, we’ll compare it to the target for that day.</div>
           </div>
           <div>
-            <label>Notas (opcional)</label>
-            <input placeholder="Ej: ‘Buen día, seguí el plan’" id="noteInput" />
-            <div class="hint">Corto y rápido. Lo importante es la constancia.</div>
+            <label>Note (optional)</label>
+            <input placeholder="e.g. ‘Stuck to the plan’" id="noteInput" />
+            <div class="hint">Keep it short. Consistency wins.</div>
           </div>
         </div>
 
-        <div class="row" style="margin-top:10px; justify-content:space-between;">
-          <button id="saveBtn">Guardar</button>
+        <div class="row space" style="margin-top:12px;">
+          <button id="saveBtn">Save</button>
           <span class="tiny" id="saveMsg"></span>
         </div>
 
-        <hr style="border:0; border-top:1px solid var(--border); margin:14px 0;">
+        <hr>
 
-        <div style="font-weight:700; font-size:14px;">Backup</div>
-        <div class="footer-actions">
-          <div class="row">
-            <button class="secondary" id="exportBtn">Exportar JSON</button>
-            <div class="file">
-              <input type="file" id="importFile" accept="application/json" />
-              <button class="secondary" id="importBtn">Importar</button>
-            </div>
+        <div style="font-weight:800; font-size:14px;">Backup</div>
+        <div class="row space" style="margin-top:10px;">
+          <button class="secondary" id="exportBtn">Export JSON</button>
+          <div class="file">
+            <input type="file" id="importFile" accept="application/json" />
+            <button class="secondary" id="importBtn">Import</button>
           </div>
         </div>
 
-        <div class="hint">Todo se guarda en tu navegador (localStorage). Exporta si cambias de móvil/PC.</div>
+        <div class="hint">
+          Everything is stored locally in your browser (no accounts, no server).
+          Export if you switch devices.
+        </div>
       </div>
     </div>
   </div>
 
 <script>
 (() => {
+  // Keep the same key so you don't lose your existing progress
   const LS_KEY = "superwoman_trading_tracker_v1";
-  const cfg = { startAmount: 30, rate: 0.28, totalDays: 30 };
 
-  const € = (n) => new Intl.NumberFormat("es-ES", { style:"currency", currency:"EUR", maximumFractionDigits:2 }).format(n);
+  const cfg = { startAmount: 30, rate: 0.28, totalDays: 30 };
+  const eur = (n) => new Intl.NumberFormat("en-GB", { style:"currency", currency:"EUR", maximumFractionDigits:2 }).format(n);
   const clamp = (n, a, b) => Math.max(a, Math.min(b, n));
   const todayISO = () => new Date().toISOString().slice(0,10);
   const midnight = (d) => new Date(d.getFullYear(), d.getMonth(), d.getDate());
@@ -274,20 +374,18 @@
   const importFile = document.getElementById("importFile");
 
   // Init
-  goalInput.value = €(cfg.startAmount * Math.pow(1 + cfg.rate, cfg.totalDays));
+  goalInput.value = eur(cfg.startAmount * Math.pow(1 + cfg.rate, cfg.totalDays));
   startDateInput.value = state.startDate || "";
 
   renderCalendar();
   renderAll();
   renderEditor();
 
-  // Helpers
   function load(){
     try{
       const raw = localStorage.getItem(LS_KEY);
       if(!raw) return defaultState();
       const parsed = JSON.parse(raw);
-      // minimal validation
       if(!parsed.entries || !Array.isArray(parsed.entries) || parsed.entries.length !== cfg.totalDays) return defaultState();
       return {
         startDate: parsed.startDate || null,
@@ -303,11 +401,9 @@
       return defaultState();
     }
   }
-  function save(){
-    localStorage.setItem(LS_KEY, JSON.stringify(state));
-  }
+  function save(){ localStorage.setItem(LS_KEY, JSON.stringify(state)); }
 
-  function targetForDay(dayNumber){ // dayNumber 1..30 -> after that day
+  function targetForDay(dayNumber){
     return cfg.startAmount * Math.pow(1 + cfg.rate, dayNumber);
   }
 
@@ -320,7 +416,6 @@
   }
 
   function lastCompletedDay(){
-    // last day that is marked yes/no
     for(let i = cfg.totalDays-1; i >= 0; i--){
       if(state.entries[i].trade !== null) return i+1;
     }
@@ -330,14 +425,9 @@
   function calcStreaks(){
     let best = 0, cur = 0;
     for(let i=0;i<cfg.totalDays;i++){
-      if(state.entries[i].trade === true){
-        cur++;
-        best = Math.max(best, cur);
-      } else {
-        cur = 0;
-      }
+      if(state.entries[i].trade === true){ cur++; best = Math.max(best, cur); }
+      else cur = 0;
     }
-    // current streak = from last completed day backwards until break (true only)
     let current = 0;
     const last = lastCompletedDay();
     for(let i=last-1; i>=0; i--){
@@ -347,65 +437,55 @@
     return { current, best };
   }
 
-  function countDone(){
-    return state.entries.filter(e => e.trade !== null).length;
-  }
+  function countDone(){ return state.entries.filter(e => e.trade !== null).length; }
 
   function renderAll(){
     const todayDay = dayFromToday();
     const selected = state.selectedDay;
 
-    // Status pill
     if(!state.startDate){
-      statusPill.textContent = "Sin empezar";
-      statusPill.style.borderColor = "var(--border)";
+      statusPill.innerHTML = "<strong>Status:</strong> Not started";
     } else {
       const last = lastCompletedDay();
       if(last >= cfg.totalDays){
-        statusPill.textContent = "Reto completado 🎉";
-        statusPill.style.borderColor = "rgba(46,160,67,.55)";
+        statusPill.innerHTML = "<strong>Status:</strong> Completed 🎉";
       } else if(todayDay){
-        statusPill.textContent = `En marcha (hoy: día ${todayDay}/30)`;
-        statusPill.style.borderColor = "rgba(31,111,235,.55)";
+        statusPill.innerHTML = `<strong>Status:</strong> In progress (today: day ${todayDay}/30)`;
       } else {
-        statusPill.textContent = "En marcha";
-        statusPill.style.borderColor = "rgba(31,111,235,.55)";
+        statusPill.innerHTML = "<strong>Status:</strong> In progress";
       }
     }
 
-    // Stats
-    dayStat.textContent = `${selected}/30`;
-    targetStat.textContent = €(targetForDay(selected));
+    dayStat.textContent = `Day ${selected} / 30`;
+    targetStat.textContent = eur(targetForDay(selected));
 
     const { current, best } = calcStreaks();
-    streakStat.textContent = `${current} (mejor ${best})`;
+    streakStat.textContent = `${current} (best ${best})`;
 
     const done = countDone();
-    doneStat.textContent = `${done}/30`;
+    doneStat.textContent = `${done} / 30`;
 
     const pct = Math.round((done / cfg.totalDays) * 100);
-    progressText.textContent = `Progreso: ${pct}%`;
+    progressText.textContent = `Progress: ${pct}%`;
     progressBar.style.width = `${pct}%`;
 
-    // On track text (based on selected day's balance if present)
     const e = state.entries[selected-1];
     if(e.balance !== null){
       const diff = e.balance - targetForDay(selected);
-      const label = diff >= 0 ? `Vas por encima: +${€(diff)}` : `Vas por debajo: ${€(diff)}`;
-      onTrackText.textContent = label;
-      onTrackText.className = "tiny " + (diff >= 0 ? "ok" : "no");
+      if(diff >= 0){
+        onTrackText.textContent = `On track: +${eur(diff)}`;
+        onTrackText.className = "tiny ok";
+      } else {
+        onTrackText.textContent = `Behind: ${eur(diff)}`;
+        onTrackText.className = "tiny no";
+      }
     } else {
-      onTrackText.textContent = "Saldo real: (opcional) para comparar";
+      onTrackText.textContent = "Add actual balance to compare";
       onTrackText.className = "tiny";
     }
 
-    // Start date input
     startDateInput.value = state.startDate || "";
-
-    // Calendar paints
     paintCalendar();
-
-    // Editor
     renderEditor();
   }
 
@@ -413,10 +493,10 @@
     calendar.innerHTML = "";
     for(let d=1; d<=cfg.totalDays; d++){
       const div = document.createElement("div");
-      div.className = "day empty";
+      div.className = "day";
       div.textContent = d;
       div.dataset.day = String(d);
-      div.title = `Día ${d}`;
+      div.title = `Day ${d}`;
       div.addEventListener("click", () => {
         state.selectedDay = d;
         save();
@@ -431,11 +511,9 @@
     nodes.forEach(node => {
       const d = Number(node.dataset.day);
       const e = state.entries[d-1];
-      node.classList.remove("good","bad","empty","selected");
+      node.classList.remove("good","bad","selected");
       if(e.trade === true) node.classList.add("good");
-      else if(e.trade === false) node.classList.add("bad");
-      else node.classList.add("empty");
-
+      if(e.trade === false) node.classList.add("bad");
       if(d === state.selectedDay) node.classList.add("selected");
     });
   }
@@ -443,30 +521,9 @@
   function renderEditor(){
     const d = state.selectedDay;
     const e = state.entries[d-1];
-    editTitle.textContent = `Editando día ${d} · Objetivo: ${€(targetForDay(d))}`;
-
+    editTitle.textContent = `Editing day ${d} · Target: ${eur(targetForDay(d))}`;
     balanceInput.value = (e.balance === null ? "" : String(e.balance));
     noteInput.value = e.note || "";
-
-    // quick visual feedback on buttons
-    tradeYesBtn.style.opacity = (e.trade === true ? "1" : ".85");
-    tradeNoBtn.style.opacity = (e.trade === false ? "1" : ".85");
-  }
-
-  function setTrade(val){
-    const e = state.entries[state.selectedDay-1];
-    e.trade = val;
-    e.updatedAt = new Date().toISOString();
-    save();
-    flash("Guardado ✅");
-    renderAll();
-  }
-
-  function clearDay(){
-    state.entries[state.selectedDay-1] = { trade:null, balance:null, note:"", updatedAt:null };
-    save();
-    flash("Día limpiado");
-    renderAll();
   }
 
   function flash(text){
@@ -474,40 +531,55 @@
     setTimeout(() => saveMsg.textContent = "", 1200);
   }
 
-  // Actions
+  function setTrade(val){
+    const e = state.entries[state.selectedDay-1];
+    e.trade = val;
+    e.updatedAt = new Date().toISOString();
+    save();
+    flash("Saved ✅");
+    renderAll();
+  }
+
+  function clearDay(){
+    state.entries[state.selectedDay-1] = { trade:null, balance:null, note:"", updatedAt:null };
+    save();
+    flash("Cleared");
+    renderAll();
+  }
+
   startTodayBtn.addEventListener("click", () => {
     state.startDate = todayISO();
     state.selectedDay = 1;
     save();
     renderAll();
-    flash("Reto iniciado hoy 🚀");
+    flash("Challenge started 🚀");
   });
 
   setStartBtn.addEventListener("click", () => {
     const v = startDateInput.value;
-    if(!v){ flash("Elige una fecha primero"); return; }
+    if(!v){ flash("Pick a date first"); return; }
     state.startDate = v;
     save();
     renderAll();
-    flash("Fecha guardada");
+    flash("Start date saved");
   });
 
   resetBtn.addEventListener("click", () => {
-    const ok = confirm("¿Seguro? Esto borra TODO el progreso en este navegador.");
+    const ok = confirm("Reset everything on this device?");
     if(!ok) return;
     state = defaultState();
     save();
     renderAll();
-    flash("Reset hecho");
+    flash("Reset done");
   });
 
   jumpTodayBtn.addEventListener("click", () => {
     const d = dayFromToday();
-    if(!d){ flash("Primero inicia el reto"); return; }
+    if(!d){ flash("Start the challenge first"); return; }
     state.selectedDay = d;
     save();
     renderAll();
-    flash("Estás en hoy");
+    flash("Jumped to today");
   });
 
   tradeYesBtn.addEventListener("click", () => setTrade(true));
@@ -517,24 +589,19 @@
   saveBtn.addEventListener("click", () => {
     const e = state.entries[state.selectedDay-1];
     const raw = balanceInput.value.trim().replace(",", ".");
-    if(raw === ""){
-      e.balance = null;
-    } else {
+    if(raw === "") e.balance = null;
+    else {
       const num = Number(raw);
-      if(!Number.isFinite(num) || num < 0){
-        flash("Saldo no válido");
-        return;
-      }
+      if(!Number.isFinite(num) || num < 0){ flash("Invalid balance"); return; }
       e.balance = num;
     }
     e.note = noteInput.value.trim();
     e.updatedAt = new Date().toISOString();
     save();
-    flash("Guardado ✅");
+    flash("Saved ✅");
     renderAll();
   });
 
-  // Export / Import
   exportBtn.addEventListener("click", () => {
     const blob = new Blob([JSON.stringify(state, null, 2)], {type:"application/json"});
     const a = document.createElement("a");
@@ -548,12 +615,12 @@
 
   importBtn.addEventListener("click", async () => {
     const file = importFile.files && importFile.files[0];
-    if(!file){ flash("Elige un archivo JSON"); return; }
+    if(!file){ flash("Choose a JSON file"); return; }
     try{
       const txt = await file.text();
       const parsed = JSON.parse(txt);
       if(!parsed.entries || !Array.isArray(parsed.entries) || parsed.entries.length !== cfg.totalDays){
-        flash("JSON no válido");
+        flash("Invalid JSON");
         return;
       }
       state = {
@@ -568,9 +635,9 @@
       };
       save();
       renderAll();
-      flash("Importado ✅");
+      flash("Imported ✅");
     } catch {
-      flash("No pude leer ese JSON");
+      flash("Could not read that JSON");
     }
   });
 
@@ -578,3 +645,4 @@
 </script>
 </body>
 </html>
+
